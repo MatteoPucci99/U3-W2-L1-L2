@@ -1,23 +1,27 @@
-import { Component } from 'react'
+import { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 
-class AddComment extends Component {
-  state = {
-    commentObject: {
-      comment: '',
-      rate: '1',
-      elementId: this.props.bookId,
-    },
-  }
+const AddComment = (props)=> {
+  // state = {
+  //   commentObject: {
+  //     comment: '',
+  //     rate: '1',
+  //     elementId: this.props.bookId,
+  //   },
+  // }
 
-  sendNewReview = async (e) => {
+  const [commentObject, setCommentObject] = useState({comment: '', rate:'1', elementId: props.bookId})
+
+
+
+ const sendNewReview = async (e) => {
     e.preventDefault()
     try {
       const response = await fetch(
         'https://striveschool-api.herokuapp.com/api/comments',
         {
           method: 'POST',
-          body: JSON.stringify(this.state.commentObject),
+          body: JSON.stringify(commentObject),
           headers: {
             Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTNhNTYyZmY2ZTNkZDAwMTQ5NWU0M2EiLCJpYXQiOjE2OTgzNDI0NDQsImV4cCI6MTY5OTU1MjA0NH0.sXEBMyMJoCYTQiBh4uMmQhuL8gXFjjdb0RP-_NToh-4",
             'Content-Type': 'application/json',
@@ -35,20 +39,24 @@ class AddComment extends Component {
     }
   }
 
-  render() {
+ 
     return (
-      <Form onSubmit={this.sendNewReview}>
+      <Form onSubmit={sendNewReview}>
         <Form.Group className="mb-1 mt-4">
           <Form.Label>Commento</Form.Label>
           <Form.Control
             type="text"
-            value={this.state.commentObject.comment}
+            value={commentObject.comment}
             onChange={(e) => {
-              this.setState({
-                commentObject: {
-                  ...this.state.commentObject,
-                  comment: e.target.value,
-                },
+              // this.setState({
+              //   commentObject: {
+              //     ...this.state.commentObject,
+              //     comment: e.target.value,
+              //   },
+              // })
+              setCommentObject({
+                ...commentObject,
+                comment: e.target.value
               })
             }}
             required
@@ -58,14 +66,20 @@ class AddComment extends Component {
           <Form.Label>Rating</Form.Label>
           <Form.Select
             aria-label="comment rating"
-            value={this.state.commentObject.rate}
+            value={commentObject.rate}
             onChange={(e) => {
-              this.setState({
-                commentObject: {
-                  ...this.state.commentObject,
-                  rate: e.target.value,
-                },
+              // this.setState({
+              //   commentObject: {
+              //     ...this.state.commentObject,
+              //     rate: e.target.value,
+              //   },
+              // })
+              setCommentObject({
+                ...commentObject,
+                rate: e.target.value
               })
+
+              
             }}
           >
             <option>1</option>
@@ -80,7 +94,7 @@ class AddComment extends Component {
         </Button>
       </Form>
     )
-  }
+  
 }
 
 export default AddComment

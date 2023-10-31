@@ -1,29 +1,38 @@
-import { Component } from 'react'
+import { useEffect } from 'react'
 import CommentsList from './CommentsList'
 import AddComment from './AddComment'
+import { useState } from 'react'
 
-class CommentArea extends Component {
-  state = {
-    comments: [],
-  }
+const CommentArea = (props)=>{
+  // state = {
+  //   comments: [],
+  // }
 
-  componentDidMount = () => {
-    // viene eseguito una volta sola, all'avvio del componente!
-    // ora faremo la fetch per recuperare i commenti
-    this.getComments()
-  }
+  const [comments, setComments] = useState([])
 
-  componentDidUpdate = (prevProps, prevState)=>{
-    if(prevProps.bookId !== this.props.bookId){
-      this.getComments()
-    }
-  }
+  // componentDidMount = () => {
+  //   // viene eseguito una volta sola, all'avvio del componente!
+  //   // ora faremo la fetch per recuperare i commenti
+  //   this.getComments()
+  // }
 
-  getComments = async () => {
+  // componentDidUpdate = (prevProps, prevState)=>{
+  //   if(prevProps.bookId !== this.props.bookId){
+  //     this.getComments()
+  //   }
+  // }
+
+  useEffect(()=>{
+    getComments()
+  },[props.bookId])
+
+
+
+  const getComments = async () => {
     try {
       const response = await fetch(
         'https://striveschool-api.herokuapp.com/api/comments/' +
-          this.props.bookId,
+          props.bookId,
         {
           headers: {
             Authorization:
@@ -34,9 +43,10 @@ class CommentArea extends Component {
       if (response.ok) {
         const arrayOfComments = await response.json()
         console.log(arrayOfComments)
-        this.setState({
-          comments: arrayOfComments,
-        })
+        // this.setState({
+        //   comments: arrayOfComments,
+        // })
+        setComments(arrayOfComments)
       } else {
         throw new Error('errore nel recupero dei commenti')
       }
@@ -45,18 +55,18 @@ class CommentArea extends Component {
     }
   }
 
-  render() {
+  
     return (
       <div>
         <div>
-          <CommentsList reviews={this.state.comments} />
+          <CommentsList reviews={comments} />
         </div>
         <div>
-          <AddComment bookId={this.props.bookId} />
+          <AddComment bookId={props.bookId} />
         </div>
       </div>
     )
-  }
+  
 }
 
 export default CommentArea
